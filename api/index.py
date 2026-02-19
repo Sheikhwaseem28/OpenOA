@@ -84,7 +84,7 @@ def process_wind_data(df):
         for _, row in monthly_df.iterrows():
             monthly_production.append({
                 "month": row['month_name'], 
-                "energy": round(row[col_map['power']], 2)
+                "energy": round(float(row[col_map['power']]), 2)
             })
     else:
         # Fallback if no time column
@@ -108,12 +108,12 @@ def process_wind_data(df):
 
     return {
         "summary": {
-            "gross_aep": round(gross_aep_gwh, 2),
-            "net_aep": round(net_aep_gwh, 2),
-            "availability": round(availability, 3),
-            "capacity_factor": round(capacity_factor, 3),
-            "wake_loss": round(wake_loss, 3),
-            "electrical_loss": round(electrical_loss, 3)
+            "gross_aep": round(float(gross_aep_gwh), 2),
+            "net_aep": round(float(net_aep_gwh), 2),
+            "availability": round(float(availability), 3),
+            "capacity_factor": round(float(capacity_factor), 3),
+            "wake_loss": round(float(wake_loss), 3),
+            "electrical_loss": round(float(electrical_loss), 3)
         },
         "monthly_production": monthly_production,
         "power_curve": power_curve,
