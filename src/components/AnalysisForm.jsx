@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { UploadCloud, CheckCircle, AlertCircle, FileText, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
+import Report from './Report';
 
 const AnalysisForm = () => {
     const [file, setFile] = useState(null);
@@ -146,21 +147,25 @@ const AnalysisForm = () => {
                         exit={{ opacity: 0, height: 0 }}
                         className="border-t border-slate-100 bg-slate-50/50"
                     >
-                        <div className="p-8 sm:p-12 max-w-4xl mx-auto">
-                            <div className="flex items-center gap-3 mb-6">
+                        <div className="p-8 sm:p-12 max-w-7xl mx-auto">
+                            <div className="flex items-center gap-3 mb-8">
                                 {result.error ? (
                                     <AlertCircle className="h-6 w-6 text-red-500" />
                                 ) : (
                                     <CheckCircle className="h-6 w-6 text-emerald-500" />
                                 )}
                                 <h3 className="text-xl font-bold text-slate-900">
-                                    {result.error ? "Analysis Failed" : "Analysis Complete"}
+                                    {result.error ? "Analysis Failed" : "Analysis Report"}
                                 </h3>
                             </div>
 
-                            <div className="bg-slate-900 rounded-xl p-6 overflow-x-auto shadow-inner text-slate-200 font-mono text-sm leading-relaxed">
-                                <pre>{JSON.stringify(result, null, 2)}</pre>
-                            </div>
+                            {result.error ? (
+                                <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-100">
+                                    {result.error}
+                                </div>
+                            ) : (
+                                <Report data={result} />
+                            )}
                         </div>
                     </motion.div>
                 )}
