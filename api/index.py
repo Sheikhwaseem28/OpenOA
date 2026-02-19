@@ -142,7 +142,9 @@ def analyze():
         return jsonify(report)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Server Error: {str(e)}", "details": traceback.format_exc()}), 500
 
 @app.route("/", methods=["GET"])
 def home():
