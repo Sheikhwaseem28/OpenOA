@@ -1,4 +1,4 @@
 flask
-openoa
-pandas
-numpy
+# openoa
+# pandas
+# numpy
