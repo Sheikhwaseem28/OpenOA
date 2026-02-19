@@ -8,9 +8,8 @@ app = Flask(__name__)
 
 def process_wind_data(df):
     """
-    Process wind data to calculate real metrics.
-    Assumes columns might be roughly named 'power', 'wind_speed', 'timestamp'.
-    We'll do a best-effort mapping.
+    Process wind data to calculate real metrics using pure Pandas/Numpy.
+    Optimized for Vercel 500MB limit (no heavy OpenOA dependency).
     """
     # Normalize column names
     df.columns = [c.lower().replace(' ', '_').replace('-', '_') for c in df.columns]
@@ -117,7 +116,7 @@ def process_wind_data(df):
         "monthly_production": monthly_production,
         "power_curve": power_curve,
         "status": "success",
-        "message": "Real Analysis Completed"
+        "message": "Real Analysis Completed (Optimized)"
     }
 
 @app.route("/api/analyze", methods=["POST"])
