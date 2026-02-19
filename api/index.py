@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
-import pandas as pd
-import numpy as np
 import io
 import json
+import traceback
 
 app = Flask(__name__)
 
@@ -11,6 +10,9 @@ def process_wind_data(df):
     Process wind data to calculate real metrics using pure Pandas/Numpy.
     Optimized for Vercel 500MB limit (no heavy OpenOA dependency).
     """
+    import pandas as pd
+    import numpy as np
+
     # Normalize column names
     df.columns = [c.lower().replace(' ', '_').replace('-', '_') for c in df.columns]
     
@@ -129,6 +131,7 @@ def analyze():
         return jsonify({"error": "No file selected"}), 400
 
     try:
+        import pandas as pd
         if file.filename.endswith('.csv'):
             df = pd.read_csv(file)
         elif file.filename.endswith('.json'):
