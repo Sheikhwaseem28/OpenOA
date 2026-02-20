@@ -3,7 +3,7 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     LineChart, Line, AreaChart, Area
 } from 'recharts';
-import { Zap, Activity, Wind, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Zap, Activity, Wind, TrendingDown, ArrowUpRight, ArrowDownRight, Database, AlertTriangle } from 'lucide-react';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
@@ -40,7 +40,7 @@ const Report = ({ data }) => {
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <MetricCard
                     title="Gross AEP"
                     value={summary.gross_aep}
@@ -76,6 +76,24 @@ const Report = ({ data }) => {
                     color="bg-rose-500"
                     trend={0.2}
                     delay={0.3}
+                />
+                <MetricCard
+                    title="Capacity Factor"
+                    value={(summary.capacity_factor * 100).toFixed(1)}
+                    unit="%"
+                    icon={Database}
+                    color="bg-violet-500"
+                    trend={1.2}
+                    delay={0.4}
+                />
+                <MetricCard
+                    title="Electrical Loss"
+                    value={(summary.electrical_loss * 100).toFixed(1)}
+                    unit="%"
+                    icon={AlertTriangle}
+                    color="bg-orange-500"
+                    trend={-0.1}
+                    delay={0.5}
                 />
             </div>
 
