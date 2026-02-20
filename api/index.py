@@ -66,7 +66,7 @@ def process_wind_data(df):
         # This is a hack to allow the code to run without external data downloads
         
         # Resample SCADA to monthly for dummy reanalysis
-        df_monthly = df.set_index(mapping['time']).resample('MS').mean()
+        df_monthly = df.set_index(mapping['time']).resample('MS').mean(numeric_only=True)
         
         reanalysis_df = pd.DataFrame(index=df_monthly.index)
         reanalysis_df['ws_dummy'] = df_monthly[mapping['WMET_HorWdSpd']] if mapping['WMET_HorWdSpd'] else 0
