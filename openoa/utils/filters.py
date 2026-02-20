@@ -8,7 +8,10 @@ from __future__ import annotations
 import numpy as np
 import scipy as sp
 import pandas as pd
-from sklearn.cluster import KMeans
+try:
+    from sklearn.cluster import KMeans
+except ImportError:
+    KMeans = None
 
 from openoa.utils._converters import (
     series_to_df,

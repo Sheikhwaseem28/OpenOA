@@ -11,19 +11,39 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import numpy.typing as npt
-import matplotlib.pyplot as plt
-from pyproj import Transformer
-from bokeh.models import WMTSTileSource, ColumnDataSource
-from bokeh.palettes import Category10, viridis
-from bokeh.plotting import figure
-from matplotlib.ticker import StrMethodFormatter
+
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import StrMethodFormatter
+except ImportError:
+    plt = None
+    StrMethodFormatter = None
+
+try:
+    from pyproj import Transformer
+except ImportError:
+    Transformer = None
+
+try:
+    from bokeh.models import WMTSTileSource, ColumnDataSource
+    from bokeh.palettes import Category10, viridis
+    from bokeh.plotting import figure
+except ImportError:
+    WMTSTileSource = None
+    ColumnDataSource = None
+    Category10 = None
+    viridis = None
+    figure = None
 
 from openoa import PlantData
 
 NDArrayFloat = npt.NDArray[np.float64]
 
 
-plt.close("all")
+NDArrayFloat = npt.NDArray[np.float64]
+
+if plt:
+    plt.close("all")
 
 
 def set_styling() -> None:
@@ -38,7 +58,11 @@ def set_styling() -> None:
     mpl.rcParams["axes.axisbelow"] = True
 
 
-set_styling()
+    mpl.rcParams["axes.axisbelow"] = True
+
+
+if plt:
+    set_styling()
 
 
 def map_wgs84_to_cartesian(

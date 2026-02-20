@@ -10,11 +10,27 @@ import numpy as np
 import pandas as pd
 import numpy.typing as npt
 import statsmodels.api as sm
-import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.markers import MarkerStyle
+except ImportError:
+    plt = None
+    MarkerStyle = None
+
 from attrs import field, define
-from tqdm.auto import tqdm, trange
+
+try:
+    from tqdm.auto import tqdm, trange
+except ImportError:
+    # Mock tqdm if not available
+    def tqdm(iterable, *args, **kwargs):
+        return iterable
+    def trange(*args, **kwargs):
+        return range(*args)
+
 from sklearn.metrics import r2_score, mean_squared_error
-from matplotlib.markers import MarkerStyle
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold
 
@@ -34,7 +50,8 @@ logger = logging.getLogger(__name__)
 NDArrayFloat = npt.NDArray[np.float64]
 
 
-plot.set_styling()
+if plt:
+    plot.set_styling()
 
 
 def get_annual_values(data):

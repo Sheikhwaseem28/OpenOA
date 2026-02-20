@@ -11,10 +11,23 @@ import attrs
 import numpy as np
 import pandas as pd
 from attrs import field, define
-from pyproj import Transformer
+try:
+    from pyproj import Transformer
+except ImportError:
+    Transformer = None
+
 from tabulate import tabulate
-from IPython.display import Markdown, display
-from shapely.geometry import Point
+
+try:
+    from IPython.display import Markdown, display
+except ImportError:
+    Markdown = None
+    display = None
+
+try:
+    from shapely.geometry import Point
+except ImportError:
+    Point = None
 
 import openoa.utils.timeseries as ts
 import openoa.utils.met_data_processing as met
@@ -647,7 +660,10 @@ class PlantData:
         if is_terminal:
             return self.__generate_text_repr()
         else:
-            return repr(display(Markdown(self.__generate_markdown_repr())))
+            if display and Markdown:
+                 return repr(display(Markdown(self.__generate_markdown_repr())))
+            else:
+                 return self.__generate_text_repr()
 
     @logged_method_call
     def _set_index_columns(self) -> None:
