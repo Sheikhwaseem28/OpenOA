@@ -235,7 +235,8 @@ def analyze():
         return jsonify(report)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        traceback.print_exc()
+        return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=5328)

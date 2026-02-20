@@ -53,7 +53,10 @@ import numpy as np
 import pandas as pd
 import sklearn
 from attrs import field, define
-from pygam import GAM
+try:
+    from pygam import GAM
+except ImportError:
+    GAM = None
 from sklearn.metrics import r2_score, make_scorer
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from sklearn.model_selection import KFold, RandomizedSearchCV

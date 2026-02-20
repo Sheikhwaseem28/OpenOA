@@ -9,7 +9,10 @@ from typing import Callable
 
 import numpy as np
 import pandas as pd
-from pygam import LinearGAM
+try:
+    from pygam import LinearGAM
+except ImportError:
+    LinearGAM = None
 from scipy.optimize import differential_evolution
 from scipy.interpolate import interp1d
 
@@ -168,7 +171,10 @@ def gam(
 
     """
     # Fit the model
-    return LinearGAM(n_splines=n_splines).fit(windspeed_col.values, power_col.values).predict
+    if LinearGAM:
+        return LinearGAM(n_splines=n_splines).fit(windspeed_col.values, power_col.values).predict
+    else:
+        raise ImportError("pygam library not installed")
 
 
 @dataframe_method(data_cols=["windspeed_col", "wind_direction_col", "air_density_col", "power_col"])
@@ -205,7 +211,11 @@ def gam_3param(
     y = data[power_col]
 
     # Fit the model
-    model = LinearGAM(n_splines=n_splines).fit(X, y)
+    # Fit the model
+    if LinearGAM:
+        model = LinearGAM(n_splines=n_splines).fit(X, y)
+    else:
+        raise ImportError("pygam library not installed")
 
     # Wrap the prediction function in a closure to pack input variables
     @dataframe_method(data_cols=["windspeed_col", "wind_direction_col", "air_density_col"])
