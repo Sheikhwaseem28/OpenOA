@@ -40,7 +40,10 @@ import attrs
 import numpy as np
 import pandas as pd
 import numpy.typing as npt
-from tqdm import tqdm
+try:
+    from tqdm import tqdm
+except ImportError:
+    def tqdm(x, **kwargs): return x
 from attrs import field, define
 from scipy.optimize import curve_fit
 

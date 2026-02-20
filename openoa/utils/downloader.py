@@ -41,11 +41,20 @@ from pathlib import Path
 from zipfile import ZipFile
 
 import numpy as np
-import cdsapi
+try:
+    import cdsapi
+except ImportError:
+    cdsapi = None
 import pandas as pd
-import xarray as xr
+try:
+    import xarray as xr
+except ImportError:
+    xr = None
 import requests
-from tqdm import tqdm
+try:
+    from tqdm import tqdm
+except ImportError:
+    def tqdm(x, **kwargs): return x
 from requests.exceptions import SSLError
 
 from openoa.utils import met_data_processing as met

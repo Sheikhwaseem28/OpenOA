@@ -15,10 +15,12 @@ import attrs
 import numpy as np
 import pandas as pd
 import numpy.typing as npt
-import matplotlib.pyplot as plt
-from tqdm import tqdm
-from attrs import field, define
-from matplotlib.ticker import StrMethodFormatter
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import StrMethodFormatter
+except ImportError:
+    plt = None
+    StrMethodFormatter = None
 
 from openoa.plant import PlantData, convert_to_list
 from openoa.utils import plot, filters, imputing

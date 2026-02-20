@@ -10,7 +10,10 @@ from __future__ import annotations
 import attrs
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 from attrs import field, define
 
 from openoa.plant import PlantData

@@ -12,7 +12,10 @@ import attrs
 import numpy as np
 import pandas as pd
 import numpy.typing as npt
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 from tqdm import tqdm
 from attrs import field, define
 

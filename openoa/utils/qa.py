@@ -10,7 +10,10 @@ import h5pyd
 import numpy as np
 import pandas as pd
 import dateutil
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 from pyproj import Proj
 from dateutil import tz
 

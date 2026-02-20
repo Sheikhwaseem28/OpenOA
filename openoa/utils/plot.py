@@ -9,7 +9,10 @@ import datetime
 
 import numpy as np
 import pandas as pd
-import matplotlib as mpl
+try:
+    import matplotlib as mpl
+except ImportError:
+    mpl = None
 import numpy.typing as npt
 
 try:
@@ -47,6 +50,8 @@ if plt:
 
 
 def set_styling() -> None:
+    if mpl is None:
+        return
     """Sets some of the matplotlib plotting styling to be consistent throughout any module where
     plotting is implemented.
     """

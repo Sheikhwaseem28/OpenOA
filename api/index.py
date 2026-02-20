@@ -10,10 +10,22 @@ import traceback
 # Assuming api/index.py is in .../OpenOA/api/ and openoa package is in .../OpenOA/
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Imports (No try-except to expose errors)
-from openoa.plant import PlantData
-from openoa.analysis.aep import MonteCarloAEP
-from openoa.schema.metadata import PlantMetaData, SCADAMetaData, ReanalysisMetaData
+# Imports
+import_error = None
+try:
+    from openoa.plant import PlantData
+    from openoa.analysis.aep import MonteCarloAEP
+    from openoa.schema.metadata import PlantMetaData, SCADAMetaData, ReanalysisMetaData
+except Exception as e:
+    import_error = traceback.format_exc()
+    print(f"Error importing OpenOA: {e}")
+    # Define dummy classes to prevent NameError in functions if they are used in type hints or checks
+    # though with import_error flag we will likely exit early.
+    PlantData = None
+    MonteCarloAEP = None
+    PlantMetaData = None
+    SCADAMetaData = None
+    ReanalysisMetaData = None
 
 app = Flask(__name__)
 
@@ -210,6 +222,9 @@ def process_wind_data(df):
 
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
+    if import_error:
+        return jsonify({"error": "Configuration Error", "trace": import_error}), 500
+
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
     
