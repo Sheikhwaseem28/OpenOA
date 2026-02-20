@@ -9,6 +9,7 @@ const AnalysisForm = () => {
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [expectedAep, setExpectedAep] = useState('');
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -42,6 +43,9 @@ const AnalysisForm = () => {
         setLoading(true);
         const formData = new FormData();
         formData.append('file', file);
+        if (expectedAep) {
+            formData.append('expected_aep', expectedAep);
+        }
 
         try {
             const res = await fetch('/api/analyze', {
@@ -110,6 +114,23 @@ const AnalysisForm = () => {
                                 </>
                             )}
                         </div>
+                    </div>
+
+                    <div className="mt-6">
+                        <label htmlFor="expected-aep" className="block text-sm font-medium text-slate-700 mb-2">
+                            Expected Annual Energy Prediction (GWh) <span className="text-slate-400 font-normal">(Optional)</span>
+                        </label>
+                        <input
+                            type="number"
+                            id="expected-aep"
+                            value={expectedAep}
+                            onChange={(e) => setExpectedAep(e.target.value)}
+                            placeholder="e.g. 120.5"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">
+                            Used to calculate EYA Gap Analysis.
+                        </p>
                     </div>
 
                     <div className="mt-8 flex justify-center">
