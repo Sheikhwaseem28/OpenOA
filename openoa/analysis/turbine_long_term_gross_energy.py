@@ -12,6 +12,7 @@ from copy import deepcopy
 from typing import Callable
 
 import attrs
+from attrs import define, field
 import numpy as np
 import pandas as pd
 import numpy.typing as npt

@@ -297,6 +297,10 @@ class FromDictMixin:
         Returns:
             (cls): An intialized object of the `attrs`-defined class (`cls`).
         """
+        # Check if data is already an instance of the class
+        if isinstance(data, cls):
+            return data
+
         # Get all parameters from the input dictionary that map to the class initialization
         kwarg_names = [a.name for a in cls.__attrs_attrs__ if a.init]
         matching = [name for name in kwarg_names if name in data]

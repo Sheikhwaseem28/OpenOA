@@ -15,7 +15,7 @@ import_error = None
 try:
     from openoa.plant import PlantData
     from openoa.analysis.aep import MonteCarloAEP
-    from openoa.schema.metadata import PlantMetaData, SCADAMetaData, ReanalysisMetaData
+    from openoa.schema.metadata import PlantMetaData, SCADAMetaData, ReanalysisMetaData, MeterMetaData, CurtailMetaData
 except Exception as e:
     import_error = traceback.format_exc()
     print(f"Error importing OpenOA: {e}")
@@ -26,8 +26,24 @@ except Exception as e:
     PlantMetaData = None
     SCADAMetaData = None
     ReanalysisMetaData = None
+    MeterMetaData = None
+    CurtailMetaData = None
+
+from flask.json.provider import DefaultJSONProvider
 
 app = Flask(__name__)
+
+class NumpyJSONProvider(DefaultJSONProvider):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super().default(obj)
+
+app.json = NumpyJSONProvider(app)
 
 def detect_columns(df):
     """
@@ -105,9 +121,37 @@ def process_wind_data(df):
             frequency="MS"
         )
         
+        # Create Dummy Meter Data (Monthly)
+        meter_df = pd.DataFrame(index=df_monthly.index)
+        # Approximate Energy = Mean Power (kW) * Hours per month
+        # Use days_in_month for better accuracy if possible, but 730h is fine for dummy
+        meter_df['MMTR_SupWh'] = df_monthly[mapping['WTUR_W']] * 730 if mapping['WTUR_W'] else 0
+        meter_df = meter_df.reset_index().rename(columns={mapping['time']: 'time'})
+
+        meter_meta = MeterMetaData(
+             time="time",
+             MMTR_SupWh="MMTR_SupWh",
+             frequency="MS"
+        )
+
+        # Create Dummy Curtail Data (Monthly)
+        curtail_df = pd.DataFrame(index=df_monthly.index)
+        curtail_df['IAVL_DnWh'] = 0.0
+        curtail_df['IAVL_ExtPwrDnWh'] = 0.0
+        curtail_df = curtail_df.reset_index().rename(columns={mapping['time']: 'time'})
+
+        curtail_meta = CurtailMetaData(
+             time="time",
+             IAVL_DnWh="IAVL_DnWh",
+             IAVL_ExtPwrDnWh="IAVL_ExtPwrDnWh",
+             frequency="MS"
+        )
+
         plant_meta = PlantMetaData(
             scada=scada_meta,
-            reanalysis={"dummy_product": reanalysis_meta}
+            reanalysis={"dummy_product": reanalysis_meta},
+            meter=meter_meta,
+            curtail=curtail_meta
         )
 
         # 2. Create PlantData Object
@@ -128,6 +172,8 @@ def process_wind_data(df):
             metadata=plant_meta,
             scada=df,
             reanalysis={"dummy_product": reanalysis_df},
+            meter=meter_df,
+            curtail=curtail_df,
             analysis_type="MonteCarloAEP" 
         )
 
@@ -138,7 +184,7 @@ def process_wind_data(df):
             reanalysis_products=["dummy_product"],
             uncertainty_meter=0.005,
             uncertainty_losses=0.05,
-            num_sim=10 # Reduced for speed in this demo
+            uncertainty_windiness=(0, 0)
         )
         
         maep.run(num_sim=10)
