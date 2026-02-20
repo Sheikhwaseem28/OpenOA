@@ -7,7 +7,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from pathlib import Path
 
-import eia
+try:
+    import eia
+except ImportError:
+    eia = None
 import numpy as np
 import pandas as pd
 
@@ -106,14 +109,17 @@ def fetch_eia(
 
     # EIA monthly energy production data
 
-    api = eia.API(api_key)  # get data from EIA
+    if eia:
+        api = eia.API(api_key)  # get data from EIA
 
-    series_search_m = api.data_by_series(series="ELEC.PLANT.GEN.%s-ALL-ALL.M" % plant_id)
-    eia_monthly = pd.DataFrame(series_search_m)  # net monthly energy generation of wind farm in MWh
-    eia_monthly.columns = ["eia_monthly_mwh"]  # rename column
-    eia_monthly = eia_monthly.set_index(
-        pd.DatetimeIndex(eia_monthly.index)
-    )  # convert to DatetimeIndex
+        series_search_m = api.data_by_series(series="ELEC.PLANT.GEN.%s-ALL-ALL.M" % plant_id)
+        eia_monthly = pd.DataFrame(series_search_m)  # net monthly energy generation of wind farm in MWh
+        eia_monthly.columns = ["eia_monthly_mwh"]  # rename column
+        eia_monthly = eia_monthly.set_index(
+            pd.DatetimeIndex(eia_monthly.index)
+        )  # convert to DatetimeIndex
+    else:
+        raise ImportError("eia library not installed")
 
     return eia_monthly, out_dic
 

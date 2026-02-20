@@ -10,13 +10,10 @@ import traceback
 # Assuming api/index.py is in .../OpenOA/api/ and openoa package is in .../OpenOA/
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-try:
-    from openoa.plant import PlantData
-    from openoa.analysis.aep import MonteCarloAEP
-    from openoa.schema.metadata import PlantMetaData, SCADAMetaData, ReanalysisMetaData
-except ImportError as e:
-    print(f"Error importing OpenOA: {e}")
-    # Fallback or error handling if openoa is not found
+# Imports (No try-except to expose errors)
+from openoa.plant import PlantData
+from openoa.analysis.aep import MonteCarloAEP
+from openoa.schema.metadata import PlantMetaData, SCADAMetaData, ReanalysisMetaData
 
 app = Flask(__name__)
 
